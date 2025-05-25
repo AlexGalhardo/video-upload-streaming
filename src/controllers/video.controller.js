@@ -1,6 +1,7 @@
 import path from "node:path";
 import Busboy from "busboy";
 import { VideoService } from "../services/video.service.js";
+import { MAX_MB, RangeBytesSchema } from "../utils/schemas/rangeBytes.schema.js";
 
 export class VideoController {
 	constructor() {
@@ -10,7 +11,7 @@ export class VideoController {
 	handleUpload(req, res) {
 		const busboy = Busboy({
 			headers: req.headers,
-			limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+			limits: { fileSize: MAX_MB },
 		});
 
 		const fileBuffer = [];
@@ -44,7 +45,7 @@ export class VideoController {
 			return res.end("Not found");
 		}
 
-		const range = req.headers.range;
+		const range = req?.headers?.range;
 		const { filePath, fileSize } = await this.videoService.getVideoMetadata(filename);
 
 		if (!range) {
@@ -52,7 +53,7 @@ export class VideoController {
 			if (cached) {
 				res.writeHead(200, {
 					"Content-Type": "video/mp4",
-					"Content-Length": cached.length,
+					"Content-Length": cached?.length,
 				});
 				return res.end(cached);
 			}
@@ -64,14 +65,22 @@ export class VideoController {
 			return stream.pipe(res);
 		}
 
-		const match = /bytes=(\d+)-(\d*)/.exec(range);
-		if (!match) {
-			res.writeHead(400);
-			return res.end("Invalid range");
+		const parsed = RangeBytesSchema.safeParse(range);
+		if (!parsed.success) {
+			res.writeHead(400, { "Content-Type": "application/json" });
+			return res.end(
+				JSON.stringify({
+					error: {
+						validation: "range",
+						code: "INVALID_RANGE",
+						message: parsed.error.issues[0].message,
+						path: parsed.error.issues[0].path,
+					},
+				}),
+			);
 		}
 
-		const start = Number.parseInt(match[1], 10);
-		const end = match[2] ? Number.parseInt(match[2], 10) : fileSize - 1;
+		const { start, end } = parsed.data;
 		const chunkSize = end - start + 1;
 
 		const stream = this.videoService.createReadStream(filePath, { start, end });

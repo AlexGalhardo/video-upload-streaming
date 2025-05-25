@@ -1,18 +1,18 @@
 import http from "node:http";
 import { VideoController } from "./controllers/video.controller.js";
 
-const controller = new VideoController();
+const videoController = new VideoController();
 
 const server = http.createServer(async (req, res) => {
 	if (req.method === "POST" && req.url === "/upload/video") {
-		return controller.handleUpload(req, res);
+		return videoController.handleUpload(req, res);
 	}
 
 	const videoRegex = /^\/static\/video\/(.+)$/;
 	const match = req.url ? videoRegex.exec(req.url) : null;
 	if (req.method === "GET" && match) {
 		const filename = match[1];
-		return controller.handleStreaming(req, res, filename);
+		return videoController.handleStreaming(req, res, filename);
 	}
 
 	res.writeHead(404);

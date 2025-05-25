@@ -1,52 +1,71 @@
-# teste-tecnico-backend-2025-trimestre-1
-Teste técnico para a posição de Backend Dev. Edição do primeiro trimestre de 2025.
+<div align="center">
+    <h1 align="center">Video Upload & Streaming</h1>
+</div>
 
-## A proposta: Upload e Streaming de Vídeos + Cache + Docker
+## Introduction
 
-A ideia é bem simples:
+- Project developed for the selection process of <a href="https://eaipago.com/" target="_blank">EaiPago.com</a>, in second quarter of 2025 for an backend software engineer role.
 
-- [ ] uma rota `POST /upload/video` que recebe um **único vídeo** com limite de 10MB e
-    - [ ] retornando o código de status 400 em caso de arquivo com tipo diferente de vídeo
-    - [ ] retornando o código de status 400 em caso de arquivo com tamanho maior que 10MB
-    - [ ] retornando o código de status 204 em caso de sucesso
-- [ ] uma rota `GET /static/video/:filename` que pode receber um Range por cabeçalho para indicar o offset de streaming
-    - [x] retornando o código de status 404 em caso de não existência de um arquivo
-    - [x] retornando o conteúdo completo caso nenhum range seja especificado com código de status 200 em caso o arquivo exista no servidor
-    - [ ] retornando a fatia desejada do conteúdo caso o range seja especificado com código de status 206
-    caso o arquivo exista no servidor
+## Development Setup Local
 
-Para infra, vamos usar o seguinte conjunto:
+1. Clone repository
 
-- [ ] um arquivo `Dockerfile` para fazer o build da imagem a partir da imagem `node:22-alpine`;
-- [ ] um arquivo `docker-compose.yml` para compor um ambiente com algum serviço de cache de sua escolha.
-
-```plain
-A ideia inicial é que os arquivos sejam armazenados dentro do volume do container da aplicação.
-Entretanto o sistema deve conseguir trocar facilmente o sistema de arquivos usado.
-(Isso não significa, entretanto, uma implementação extra de outro sistema de arquivos, apenas a
-capacidade de troca entre sistemas de arquivos)
-
-Teremos um cache de 60s de TTL para cada arquivo.
-O arquivo deve estar disponível antes mesmo de ser persistido no sistema de arquivos.
-O arquivo só deve ser lido a partir do sistema de arquivos se não houver cache válido para o mesmo.
+```bash
+git clone git@github.com:AlexGalhardo/video-upload-streaming-eaipago.git
 ```
 
-## Restrições
+2. Enter folder
 
-A única limitação é o uso requerido da runtime `node.js`.
+```bash
+cd video-upload-streaming-eaipago/
+```
 
-Você tem total liberdade para usar as demais bibliotecas que mais lhe fornecerem produtividade.
+3. Install dependencies
 
-Acaso você esteja utilizando este projeto como um meio de estudo, nós o aconselhamos a usar a biblioteca padrão para lidar com requisições web do Node.js, `http`.
+```bash
+npm install
+```
 
-## O que estamos avaliando
+4. Start local server autoreload
 
-Este teste busca avaliar as seguintes competências:
+```bash
+npm run dev
+```
 
-1. Capacidade de uso correto de design patterns;
-2. Capacidade de interação com APIs de sistema;
-3. Capacidade de desenvolver soluções que usam o conceito de concorrência para extrair maior desempenho do hardware;
-4. Domínio sobre a linguagem JavaScript;
-5. Domínio sobre a runtime `node.js`;
-6. Capacidade de organização de código (Adendo: organize da forma que for mais familiarizado, não estamos olhando para a estrutura de pastas, mas sim para a coesão e o desacoplamento) e
-7. Capacidade de lidar com contêineres Docker.
+5. Go to: <http://localhost:3000>
+
+## Docker
+
+- Install [Docker & Docker-compose](https://docs.docker.com/compose/install/)
+
+1. Run docker-compose build (add `-d` to not show logs in the terminal)
+
+```bash
+sudo docker compose up
+```
+
+2. Go to: <http://localhost:3000>
+
+## HTTP Requests
+
+- POST Upload Video
+
+```md
+POST http://localhost:3000/upload/video
+Multipart Form Data
+name: video
+value: upload_your_video until 10MB
+```
+
+- GET Streaming Video
+
+```md
+- GET http://localhost:3000/static/video/<VIDEO_NAME_AFTER_UPLOAD_HERE>
+Range: bytes=0-1048576 (1MB) -> Must be always with 1MB of range, and not exceed 10MB
+```
+
+## LICENSE
+
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) May 2025-present, Alex Galhardo

@@ -17,9 +17,10 @@
     "@biomejs/biome": "1.9.4",
     "@types/busboy": "^1.5.4",
     "busboy": "^1.6.0",
+    "husky": "^9.1.7",
     "ioredis": "^5.3.2",
     "mime-types": "^2.1.35",
-    "husky": "^9.1.7"
+    "zod": "^3.25.28"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
