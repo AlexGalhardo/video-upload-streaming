@@ -1,15 +1,25 @@
 {
-  "name": "teste-tecnico-backend-2025-trimestre-1",
+  "name": "streaming.alexgalhardo.com",
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "husky": "npx husky",
+    "lint": "biome check src/ --fix --unsafe",
+    "format": "biome format src/ --fix"
+  },
+  "lint-staged": {
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,json,jsonc}": [
+      "biome check --apply --no-errors-on-unmatched"
+    ]
   },
   "dependencies": {
+    "@biomejs/biome": "1.9.4",
     "@types/busboy": "^1.5.4",
     "busboy": "^1.6.0",
     "ioredis": "^5.3.2",
-    "mime-types": "^2.1.35"
+    "mime-types": "^2.1.35",
+    "husky": "^9.1.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
