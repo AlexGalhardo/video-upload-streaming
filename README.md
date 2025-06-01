@@ -4,7 +4,7 @@
 
 ## Introduction
 
-- Project developed for the selection process of <a href="https://eaipago.com/" target="_blank">EaiPago.com</a>, in second quarter of 2025 for an backend software engineer role.
+- Simple project to learn more about video upload and streaming
 
 ## Development Setup Local
 
